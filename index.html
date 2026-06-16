@@ -135,7 +135,8 @@
                         <p><strong>Program:</strong> Luni-Vineri 08:00-17:00</p>
                         <p><strong>Adresă:</strong> Intervenții la fața locului, solicită ofertă pentru locație</p>
                     </div>
-                    <form class="contact-form">
+                    <form class="contact-form" action="/contact" method="POST" id="contactForm">
+                        <div id="contact-status" class="contact-status"></div>
                         <label>
                             Nume
                             <input type="text" name="name" placeholder="Numele tău" required>
@@ -158,5 +159,39 @@
             <p>© 2026 FinART-Diamant. Toate drepturile rezervate.</p>
         </footer>
     </div>
+    <script>
+        const contactForm = document.getElementById('contactForm');
+        const contactStatus = document.getElementById('contact-status');
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', async event => {
+                event.preventDefault();
+                contactStatus.textContent = 'Se trimite mesajul...';
+                contactStatus.style.color = '#f1b32d';
+
+                const formData = new FormData(contactForm);
+                const body = new URLSearchParams(formData);
+
+                try {
+                    const response = await fetch('/contact', {
+                        method: 'POST',
+                        body,
+                    });
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || 'A apărut o eroare.');
+                    }
+
+                    contactStatus.textContent = result.message;
+                    contactStatus.style.color = '#071014';
+                    contactForm.reset();
+                } catch (error) {
+                    contactStatus.textContent = error.message;
+                    contactStatus.style.color = '#ff7676';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
