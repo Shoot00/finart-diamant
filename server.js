@@ -17,6 +17,7 @@ if (missingEnv.length > 0) {
   console.warn(`Lipsește variabila de mediu: ${missingEnv.join(', ')}`);
 }
 
+// AICI ESTE PARTEA MODIFICATĂ (Liniile 20-31)
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT) || 587,
@@ -25,6 +26,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+  tls: {
+    rejectUnauthorized: false
+  }
 });
 
 app.post('/contact', async (req, res) => {
